@@ -1,5 +1,6 @@
 import UIKit
 import CoreImage
+import CoreImage.CIFilterBuiltins
 import Photos
 
 class PhotoFilterViewController: UIViewController {
@@ -13,6 +14,9 @@ class PhotoFilterViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+        
+        let filter = CIFilter.gaussianBlur()
+        print(filter.attributes)
 
 	}
 	
