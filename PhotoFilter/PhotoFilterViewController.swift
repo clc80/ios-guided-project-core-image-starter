@@ -15,6 +15,9 @@ class PhotoFilterViewController: UIViewController {
             updateImage()
         }
     }
+    
+    private let context = CIContext()
+    private let filter = CIFilter.colorControls()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -25,9 +28,25 @@ class PhotoFilterViewController: UIViewController {
 //        print(filter.attributes)
 
 	}
+    
+    private func image(byFiltering image: UIImage) -> UIImage {
+        let inputImage = CIImage(image: image)
+        
+        filter.inputImage = inputImage
+        filter.saturation = saturationSlider.value
+        filter.brightness = brightnessSlider.value
+        filter.contrast = contrastSlider.value
+        
+        guard let outputImage = filter.outputImage else { return image }
+        guard let renderedCGImage = context.createCGImage(outputImage, from: outputImage.extent) else { return image }
+        
+        return UIImage(cgImage: renderedCGImage)
+        
+    }
+    
     private func updateImage() {
         if let originalImage = originalImage {
-            imageView.image = originalImage
+            imageView.image = image(byFiltering: originalImage)
         } else {
             imageView.image = nil
         }
@@ -61,15 +80,15 @@ class PhotoFilterViewController: UIViewController {
 	// MARK: Slider events
 	
 	@IBAction func brightnessChanged(_ sender: UISlider) {
-
+        updateImage()
 	}
 	
 	@IBAction func contrastChanged(_ sender: Any) {
-
+        updateImage()
 	}
 	
 	@IBAction func saturationChanged(_ sender: Any) {
-
+        updateImage()
 	}
 }
 
